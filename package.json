@@ -1,0 +1,25 @@
+{
+  "name": "sqream-connector",
+  "version": "1.4.4",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "./scripts/postinstall.js"
+  },
+  "author": "Erez Avny",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "install": "^0.8.7",
+    "npm": "^4.4.4"
+  },
+  "devDependencies": {
+    "async": "^2.1.5",
+    "chai": "^4.1.2",
+    "mocha": "^5.1.1",
+    "mocha-logger": "^1.0.5",
+    "mocha-steps": "^1.1.0",
+    "moment": "^2.18.1"
+  }
+}
