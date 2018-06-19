@@ -1,6 +1,6 @@
 {
   "name": "sqream-connector",
-  "version": "1.4.4",
+  "version": "6.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
