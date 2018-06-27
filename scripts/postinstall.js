@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var fs = require('fs');
+var fs = require('fs-extra');
 
 var HOME_DIR =  __dirname + '/';
 const version  = parseInt(Number(process.version.match(/^v(\d+\.\d+)/)[1]));
@@ -20,16 +20,16 @@ var deleteFolderRecursive = function(path) {
 
 
 if (version === 6) {
-    fs.rename(HOME_DIR+'../lib/addon_6', HOME_DIR+'../lib/addon', function (err) {
+    fs.copy(HOME_DIR+'../lib/addon_6', HOME_DIR+'../lib/addon', function (err) {
         if (err) throw err;
         console.log('renamed complete');
     });
-    deleteFolderRecursive(HOME_DIR+'../lib/addon_8');
+    //deleteFolderRecursive(HOME_DIR+'../lib/addon_8');
 } else {
-    fs.rename(HOME_DIR+'../lib/addon_8', HOME_DIR+'../lib/addon', function (err) {
+    fs.copy(HOME_DIR+'../lib/addon_8', HOME_DIR+'../lib/addon', function (err) {
         if (err) throw err;
         console.log('renamed complete');
     });
-    deleteFolderRecursive(HOME_DIR+'../lib/addon_6');
+    //deleteFolderRecursive(HOME_DIR+'../lib/addon_6');
 }
 
