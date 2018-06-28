@@ -5,3 +5,4 @@ package-lock.json
 .idea/workspace.x
 ../.idea/workspace.xml
 *.tgz
+/test/erez.log
