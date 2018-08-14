@@ -1,10 +1,10 @@
 all: connectors-nodejs
 
-connectors-nodejs:
-    ifeq ($(wildcard node_modules/*),)
-		-npm install
-    endif
+connectors-nodejs: node_modules
 	-npm pack
+
+node_modules:
+	-npm install
 
 clean:
 	-rm -Rf node_modules package-lock.json
