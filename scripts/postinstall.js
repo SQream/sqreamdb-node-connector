@@ -2,9 +2,9 @@ const fs = require('fs-extra');
 const path = require('path')
 
 const node_version  = parseInt(Number(process.version.match(/^v(\d+\.\d+)/)[1]));  
-const addon_path = (node_version === 6) ? path.resolve('lib', 'addon_6') : path.resolve('lib', 'addon_8') // path.resolve starts with current folder
+const addon_path = (node_version === 6) ? path.resolve(__dirname, 'lib', 'addon_6') : path.resolve(__dirname, 'lib', 'addon_8') // path.resolve starts with current folder
 
-fs.copy(addon_path, path.resolve('lib', 'addon'), function (err) {
+fs.copy(addon_path, path.resolve(__dirname, 'lib', 'addon'), function (err) {
     if (err) throw err;
     console.log('renamed complete');
 });
