@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-require('path')
+const path = require('path')
 
 const node_version  = parseInt(Number(process.version.match(/^v(\d+\.\d+)/)[1]));  
 const addon_path = (node_version === 6) ? path.resolve('lib', 'addon_6') : path.resolve('lib', 'addon_8') // path.resolve starts with current folder
