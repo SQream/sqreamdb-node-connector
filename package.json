@@ -12,6 +12,7 @@
     "bindings": "^1.2.1",
     "fs-extra": "^6.0.1",
     "install": "^0.8.7",
+    "iconv-lite": "0.4.24",
     "npm": "^5.6.0"
   },
   "devDependencies": {
