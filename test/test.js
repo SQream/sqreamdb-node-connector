@@ -10,11 +10,11 @@ const config = {
   is_ssl: false
 };
 
-//const query1 = "SELECT 1 as test, 2 as other_test;";
-  const query1 = "SELECT 555";
+// const query1 = "SELECT 1 as test, 2 as other_test;";
+  const query1 = "SELECT 'shoKo'";
  //const query1 = "set sessionTag='webui';";
 //const query1 = "set developerMode=true;";
-//const query1 = "SELECT get_table_types()";
+// const query1 = "SELECT get_table_types()";
 // const query1 = "select * from sqream_catalog.tables;";
 // const query1 = "select * from nation;";
 //const setFlag = "SET sessionTag='webui2';";
