@@ -1,5 +1,5 @@
 {
-  "name": "SQream-nodejs-connector",
+  "name": "sqreamdb",
   "version": "3.0.0",
   "description": "",
   "main": "index.js",
