@@ -163,7 +163,7 @@ describe('BIGINT Table', function() {
         const res = await runQueryPromise('SELECT * FROM test');
         const keys =  Object.keys(res.data[0]);
         const val = res.data[0][keys[0]];
-        expect(val).to.equal('1');
+        expect(val).to.equal(1n);
     });
 
     step('Fetch BIGINT value', async function() {

@@ -11,7 +11,7 @@ const config = {
 };
 
 // const query1 = "SELECT 1 as test, 2 as other_test;";
-  const query1 = "SELECT * from bobb";
+  const query1 = "SELECT 'koko'";
  //const query1 = "set sessionTag='webui';";
 //const query1 = "set developerMode=true;";
 // const query1 = "SELECT get_table_types()";
