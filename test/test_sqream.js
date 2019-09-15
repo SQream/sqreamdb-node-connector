@@ -8,7 +8,7 @@ const moment = require('moment');
 const net = require('net');
 const Stream = require('stream');
 const readableStream =  require('stream').Readable;
-const sqreamCppBuffer = require('../lib/addon/sqreamLongAddon.node');
+const sqreamCppBuffer = require('./sqreamLongAddon.node');
 const logFilePath =  __dirname+ '/erez.log';
 
 var statementId;
