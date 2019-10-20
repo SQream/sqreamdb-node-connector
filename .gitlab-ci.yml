@@ -1,0 +1,11 @@
+cache:
+  paths:
+before_script:
+tests_and_benchmark:
+  script:
+    -- "npm install"
+  only:
+    refs:
+      - merge_requests
+      - master
+      - web
