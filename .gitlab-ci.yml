@@ -3,7 +3,7 @@ cache:
 before_script:
 tests_and_benchmark:
   script:
-    -- "npm install"
+    -- "npm install" 
   only:
     refs:
       - merge_requests
