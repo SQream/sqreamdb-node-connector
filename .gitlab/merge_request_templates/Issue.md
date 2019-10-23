@@ -2,7 +2,7 @@ Resolves SQ-<XXXX> (please replace with the correct Jira item ID)
 
 # Approval
 
-- [ ] Java (name, date)
+- [ ] Code review (name, date)
 - [ ] R&D test plan (name, date)
 
 # Summary
