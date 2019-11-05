@@ -19,11 +19,7 @@ pipeline {
         }
         stage('Build'){
             steps {
-                sh '''
-                cd nodejs
-                sed -i "/version/c  \"version\": \"${version_num}\"," package.json
-                npm install && npm pack
-                '''        
+                sh "cd nodejs; sed -i "/version/c  \"version\": \"${version_num}\"," package.json; npm install && npm pack"        
             }
         }
         stage('Unit Testing'){
