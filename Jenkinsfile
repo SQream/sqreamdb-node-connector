@@ -19,11 +19,11 @@ pipeline {
         }
         stage('Set version number and Build'){
             steps {
-                sh """
+                sh ("""
                 cd nodejs
-                sed -i "/version/c   \"version\" : \"${version_num}\"," package.json
+                sed -i "/version/c   \\"version\\" : \\"${version_num}\\"," package.json
                 npm install && npm pack
-                """
+                """)
             }
         }
         stage('Unit Testing'){
