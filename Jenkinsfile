@@ -21,7 +21,8 @@ pipeline {
             steps {
                 sh '''
                 cd nodejs
-                sed -i "/version/c  \"version\": \"${version_num}\"," package.json
+                chmod u+x set_version.sh
+                ./set_version.sh
                 npm install && npm pack
                 '''
             }
