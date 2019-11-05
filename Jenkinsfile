@@ -17,14 +17,13 @@ pipeline {
                 sh 'git clone -b $branch http://gitlab.sq.l/connectors/nodejs.git --recursive' 
                 }
         }
-        stage('Set version and Build'){
+        stage('Set version number and Build'){
             steps {
-                sh '''
+                sh """
                 cd nodejs
-                chmod u+x set_version.sh
-                ./set_version.sh
+                sed -i "/version/c\   \"version\" : \"${version_num}\"," package.json
                 npm install && npm pack
-                '''
+                """
             }
         }
         stage('Unit Testing'){
