@@ -1,0 +1,1 @@
+sed -i "/version/c\   \"version\" : \"${version_num}\"," package.json
