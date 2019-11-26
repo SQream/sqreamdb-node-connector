@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node node_modules/.bin/mocha ./test/test_functional.js --require mocha-steps --timeout 4000"
   },
   "author": "Erez Avny",
   "license": "ISC",

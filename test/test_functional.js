@@ -3,8 +3,8 @@ const expect = require('chai').expect;
 const Connection = require('../index');
 
 const config = {
-    host: '127.0.0.1',
-    port: 5000,
+    host: process.env.SQHOST || '127.0.0.1',
+    port: process.env.SQPORT || 5000,
     username: 'sqream',
     password: 'sqream',
     connectDatabase: 'master',
