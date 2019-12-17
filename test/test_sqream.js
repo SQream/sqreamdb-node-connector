@@ -71,7 +71,7 @@ const dataTypeToBuffer = {
     return buf;
   },
   ftBlob: function (value, columnType) {
-    var calcLen = columnType.len / 4;
+    var calcLen = config.max_buffer_size;
     var buf = Buffer.alloc(calcLen);
     var valToBuf;
     if (value) {
@@ -159,10 +159,10 @@ class TestSqreamNodeConnector {
 
     switch(type){
       case 'ftVarchar':
-        output.push(`varchar(${len})`);
+        output.push(`varchar(${config.max_buffer_size})`);
         break;
       case 'ftBlob':
-        output.push(`varchar(${(len/4)})`);
+        output.push(`varchar(${config.max_buffer_size})`);
         break;
       case 'ftInt':
         if (len == 1){
@@ -218,11 +218,11 @@ class TestSqreamNodeConnector {
     types.map( item => {
       typesByName[item.name] = {
         type: item.type[0],
-        len: item.type[1],
+        len: (item.isTrueVarChar || item.type[0] == 'ftVarchar') ? config.max_buffer_size : item.type[1],
         nullable: item.nullable,
         isTrueVarChar: item.isTrueVarChar
       };
-  });
+    });
 
     return typesByName;
   }
@@ -538,8 +538,8 @@ if (isDEV) {
     connectDatabase: 'master'
   };
 
-  if (process.argv.length < 6){
-    console.log('arguments are: <dir> <sql statement> <database> <port> <sqream ip> <cluster true/false> <user> <password>\n');
+  if (process.argv.length < 7){
+    console.log('arguments are: <dir> <sql statement> <database> <port> <max_buffer_size> <sqream ip> <cluster true/false> <user> <password>\n');
     return;
   }
 
@@ -551,21 +551,21 @@ if (isDEV) {
   config.sql = process.argv[3].replace(sql_regex ,'/');
   config.connectDatabase = process.argv[4];
   config.port = process.argv[5];
-
-
-  if (process.argv.length >= 6) {
-    config.host = process.argv[6];
-  }
+  config.max_buffer_size = parseInt(process.argv[6]);
 
   if (process.argv.length >= 7) {
-    config.cluster = process.argv[7];
-  }
-  if (process.argv.length >= 8) {
-    config.user = process.argv[8];
+    config.host = process.argv[7];
   }
 
+  if (process.argv.length >= 8) {
+    config.cluster = process.argv[8];
+  }
   if (process.argv.length >= 9) {
-    config.password = process.argv[9];
+    config.user = process.argv[9];
+  }
+
+  if (process.argv.length >= 10) {
+    config.password = process.argv[10];
   }
 }
 /*
