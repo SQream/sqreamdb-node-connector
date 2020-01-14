@@ -21,4 +21,5 @@ tests_and_benchmark:
     refs:
       - merge_requests
       - master
+      - develop
       - web
