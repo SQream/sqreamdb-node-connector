@@ -31,12 +31,7 @@ pipeline {
                 """)
             }
         }
-        stage('Unit Testing'){
-            steps {
-                sh 'cd nodejs; node node_modules/.bin/mocha ./test/test_functional.js --require mocha-steps --timeout 4000'               
-            }
-        }
-          stage('upload to artifactory'){
+        stage('upload to artifactory'){
             steps {
                 sh 'cd nodejs; curl -u ${ARTIFACT_USER}:${ARTIFACT_PASSWORD} -T *.tgz $ARTIFACTORY_URL/connectors/nodejs/$env/'
                 sh 'rm -rf nodejs/'
