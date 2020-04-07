@@ -495,10 +495,11 @@ class TestSqreamNodeConnector {
 */
 
     const cb = function (err, data) {
-      if (err){
+      if (err) {
         writeToLogFile(JSON.stringify(err));
+      } else {
+        self.outputData(data);
       }
-      self.outputData(data);
     };
     myConnection.runQuery(this.config.sql, cb);
   }
