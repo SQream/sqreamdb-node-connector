@@ -1,25 +1,18 @@
 cache:
   paths:
 before_script:
-  - "cd /home/gitlab-runner/sqream-with-submodules/sqream"
-  - "git checkout develop"
-  - "git pull"
-  - "if make -j7 all; then echo 'COMPILE SUCCESS'; else make clean_all && make -j7 all; fi"
-  - "killall -9 sqreamd metadata_server || echo 'Sqream was not running.'"
-  - "./build/metadata_server &"
-  - "./build/sqreamd &"
   - "cd $CI_PROJECT_DIR"
   - "git fetch"
-  - "git checkout $CI_COMMIT_REF_NAME"
+  - "git checkout $CI_COMMIT_SHA"
   - "git status"
 tests_and_benchmark:
   script:
     - "npm install --ignore-scripts"
     - "npm test"
-    - "killall -9 sqreamd metadata_server"
   only:
     refs:
       - merge_requests
       - master
       - develop
       - web
+      - niry_api_improvments_20191125

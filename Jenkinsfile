@@ -19,7 +19,10 @@ pipeline {
         }
         stage('git clone nodejs') { 
             steps { 
-                sh 'git clone -b $branch http://gitlab.sq.l/connectors/nodejs.git --recursive' 
+                sh ("""
+                rm -rf nodejs/
+                git clone -b $branch http://gitlab.sq.l/connectors/nodejs.git --recursive' 
+                """)
                 }
         }
         stage('Set version number and Build'){

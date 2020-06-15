@@ -16,6 +16,7 @@ Make sure to edit the required details, such as:
  * your password
  * cluster: true/false
  * is_ssl: true/false
+ * service: service name
 
 ```javascript
 // filename: test_sqream.js
@@ -23,30 +24,35 @@ const Connection = require('sqream-connector');
 
 const config = {
   host: '<your server address>',
-  port: <your server port>,
+  port: 5000,
   username: '<your username>',
   password: '<your password>',
   connectDatabase: '<your database>',
 };
 
 const query1 = "SELECT 1 as test, 2 as other_test";
-const myConnection = new Connection(config);
-myConnection.runQuery(query1, function (err, data){
-  console.log(err, data);
+const sqream = new Connection(config);
+sqream.execute(query1).then((data) => {
+  console.log(data);
+}, (err) => {
+  console.error(err);
 });
+
 ```
 
 
 Run your file with node:
-```
+
+```bash
 node test_sqream.js
 ```
 
 Config with cluster
-```
+
+```javascript
 const config = {
   host: '<your server address>',
-  port: <your load balancer>,
+  port: 3108,
   username: '<your username>',
   password: '<your password>',
   connectDatabase: '<your database>',
@@ -56,10 +62,11 @@ const config = {
 ```
 
 Secure connection
-```
+
+```javascript
 const config = {
   host: '<your server address>',
-  port: <your load balancer>,
+  port: 5100,
   username: '<your username>',
   password: '<your password>',
   connectDatabase: '<your database>',
@@ -68,11 +75,10 @@ const config = {
 
 ```
 
+On a successful connection, you should see:
 
-
-On a successful connection, you should see
 ```
-null [ { test: 1, other_test: 2 } ]
+[ { test: 1, other_test: 2 } ]
 ```
 
 Otherwise, please contact SQream support with the error description.
