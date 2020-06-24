@@ -18,6 +18,7 @@ export interface IConnectionReady {
   disconnect(): Promise<void>;
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
+  executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
 }
 
 export interface IQueryReady<T> {
@@ -34,10 +35,9 @@ export interface IQueryExecute<T> {
 
 export interface IQueryFetch<T> {
   queryTypeNamed: IQueryTypeNamed[];
-  fetchAll(rowLimit?: number): Promise<{
-    close: () => Promise<void>,
-    results: T[]
-  }>;
+  close: () => Promise<void>
+  fetchIterator: (chunkSize?: number) => AsyncGenerator<T[]>
+  fetchAll(rowLimit?: number): Promise<T[]>;
 }
 
 export interface IQueryTypeNamed {
@@ -96,6 +96,7 @@ export default class Connection implements IConnection {
   config: IConnectionConfig;
   connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
+  executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
   constructor(config: IConnectionConfig);
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
