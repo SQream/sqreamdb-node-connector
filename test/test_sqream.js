@@ -54,7 +54,7 @@ const dataTypeToBuffer = {
   },
   ftLong: function (value) {
     const buf = Buffer.alloc(8);
-    sqreamCppBuffer.longToBuffer(buf, value);
+    buf.writeBigInt64LE(BigInt(value || 0), 0);
     return buf;
   },
   ftVarchar: function (value, columnType) {
@@ -113,9 +113,10 @@ const dataTypeToBuffer = {
       nTime = nTime + dt.second();
       nTime = nTime + dt.format('SSS');
       var date = convertDateToInt(value);
-      sqreamCppBuffer.dateTimeHelper(buf, date, nTime);
+      var dateTime = (BigInt(date) << BigInt(32)) | BigInt(nTime);
+      buf.writeBigInt64LE(dateTime, 0);
     } else {
-      sqreamCppBuffer.dateTimeHelper(buf, 0, 0);
+      buf.writeBigInt64LE(BigInt(0), 0);
     }
     return buf;
   },
@@ -347,7 +348,7 @@ class TestSqreamNodeConnector {
       write();
       function write() {
         var ok = true;
-        do {
+        while (count < totalLines && ok) {
           //console.log(count, data[count]);
           out = dataTypeToBuffer.getBuffer(data[count][key], typesByName[key]);
           if (count === (totalLines - 1) ) {
@@ -360,7 +361,7 @@ class TestSqreamNodeConnector {
             ok = writer.write(out);
           }
           count++;
-        } while (count < totalLines && ok);
+        }
         if (count < totalLines) {
           // had to stop early!
           // write some more once it drains
@@ -374,7 +375,7 @@ class TestSqreamNodeConnector {
       write();
       function write() {
         var ok = true;
-        do {
+        while (count < totalLines && ok) {
           const buf = Buffer.alloc(1);
           if (data[count][key] === null) {
             buf.writeIntLE(1,0,1);
@@ -392,7 +393,7 @@ class TestSqreamNodeConnector {
             ok = writer.write(buf);
           }
           count++;
-        } while (count < totalLines && ok);
+        }
         if (count < totalLines) {
           // had to stop early!
           // write some more once it drains
