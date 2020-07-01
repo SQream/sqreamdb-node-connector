@@ -1,10 +1,8 @@
 # Connecting SQream with nodejs
 
-## Requirement
+## Installation
 
-1. Copy sqream-node-connector to sub folder on your project.
-2. npm install <sqream-connector-{version}.tgz>
-
+`npm install @sqream/sqreamdb`
 
 ### Create a sample connection for testing
 
@@ -20,7 +18,7 @@ Make sure to edit the required details, such as:
 
 ```javascript
 // filename: test_sqream.js
-const Connection = require('sqream-connector');
+const Connection = require('@sqream/sqreamdb');
 
 const config = {
   host: '<your server address>',
@@ -39,7 +37,6 @@ sqream.execute(query1).then((data) => {
 });
 
 ```
-
 
 Run your file with node:
 

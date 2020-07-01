@@ -1,0 +1,6 @@
+.gitlab
+test
+.gitignore
+Jenkinsfile
+nodejs.mk
+node_modules
