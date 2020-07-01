@@ -1,4 +1,6 @@
 .gitlab
+.github
+.gitlab-ci.yml
 test
 .gitignore
 Jenkinsfile
