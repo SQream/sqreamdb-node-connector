@@ -102,3 +102,7 @@ export default class Connection implements IConnection {
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
   static extractStrings(string: string): IExtractedStrings;
 }
+
+declare module '@sqream/sqreamdb' {
+  export = Connection;
+}
