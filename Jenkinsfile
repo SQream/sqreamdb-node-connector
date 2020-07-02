@@ -21,7 +21,7 @@ pipeline {
             steps { 
                 sh ("""
                 rm -rf nodejs/
-                git clone -b $branch http://gitlab.sq.l/connectors/nodejs.git --recursive' 
+                git clone -b $branch http://gitlab.sq.l/connectors/nodejs.git --recursive
                 """)
                 }
         }
