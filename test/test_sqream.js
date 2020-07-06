@@ -551,21 +551,21 @@ if (isDEV) {
   //console.log(process.argv[3].replace(regex ,'/'));
   config.sql = process.argv[3].replace(sql_regex ,'/');
   config.connectDatabase = process.argv[4];
-  config.port = process.argv[5];
+  config.port = process.argv[5] | 0;
   config.max_buffer_size = parseInt(process.argv[6]);
 
-  if (process.argv.length >= 7) {
+  if (process.argv.length >= 8) {
     config.host = process.argv[7];
   }
 
-  if (process.argv.length >= 8) {
+  if (process.argv.length >= 9) {
     config.cluster = process.argv[8];
   }
-  if (process.argv.length >= 9) {
+  if (process.argv.length >= 10) {
     config.user = process.argv[9];
   }
 
-  if (process.argv.length >= 10) {
+  if (process.argv.length >= 11) {
     config.password = process.argv[10];
   }
 }

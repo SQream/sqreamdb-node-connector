@@ -1,6 +1,4 @@
 /node_modules/
 .idea/
-.idea/workspace.x
-../.idea/workspace.xml
 *.tgz
-/test/erez.log
+/test/test_sqream.log
