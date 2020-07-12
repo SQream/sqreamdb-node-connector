@@ -496,7 +496,9 @@ class TestSqreamNodeConnector {
 
     const cb = function (err, data) {
       if (err) {
-        writeToLogFile(JSON.stringify(err));
+        writeToLogFile(err.message);
+        process.exitCode = 1;
+        console.error('Error: ' + err.message);
       } else {
         self.outputData(data);
       }
