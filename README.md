@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- NodeJS 10.x or newer
+- NodeJS 10.x or later
 
 ## Installation
 
@@ -93,24 +93,27 @@ const sqream = new Connection(config);
 (async () => {
   const cursor = await sqream.executeCursor(query1);
   let count = 0;
-  for await (let rows of curser.fetchIterator(100)) { // fetch rows in chunks of 100
+  for await (let rows of cursor.fetchIterator(100)) { // fetch rows in chunks of 100
     count += rows.length;
   }
   await cursor.close();
-  return conut;
-}).then((total) => {
+  return count;
+})().then((total) => {
   console.log('Total rows', total);
 }, (err) => {
   console.error(err);
 });
 ```
 
-## Keeping an open connection
+## Reusing connection
+
+It is possible to execeute multiple queries with the same connection, although only one query can be executed at a time.
 
 ```javascript
 const sqream = new Connection(config);
 
 (async () => {
+
   const conn = await sqream.connect();
   try {
     const res1 = await conn.execute("SELECT 1");
@@ -122,16 +125,17 @@ const sqream = new Connection(config);
     conn.disconnect();
     throw err;
   }
-}).then((total) => {
+
+})().then((res) => {
   console.log('Results', res)
 }, (err) => {
   console.error(err);
 });
 ```
 
-## Variable placeholders
+## Input placeholders
 
-Variable placeholders allows to have queries that include dynamic values, like user input, by placing placeholders in the query which get replaced with escaped values that are supplied to the function.
+Input placeholders allows to have queries that include dynamic values, like user input, by placing placeholders in the query which get replaced with escaped values that were supplied to the function.
 
 ```javascript
 const sqream = new Connection(config);
