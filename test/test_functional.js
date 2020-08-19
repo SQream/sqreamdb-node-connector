@@ -47,7 +47,7 @@ describe('Boolean Table', function() {
         expect(val).to.equal(0);
     });
 
-    step('Fetch Bool value', async function() {
+    step('Insert invalid Bool value', async function() {
         const res = await runQueryPromise('insert into test values (40000)');
         should.exist(res.err);
     });
@@ -76,7 +76,7 @@ describe('TINYINT Table', function() {
         expect(val).to.equal(1);
     });
 
-    step('Fetch TINYINT value', async function() {
+    step('Insert invalid TINYINT value', async function() {
         const res = await runQueryPromise('insert into test values (40000)');
         should.exist(res.err);
     });
@@ -106,7 +106,7 @@ describe('SMALLINT Table', function() {
         expect(val).to.equal(1);
     });
 
-    step('Fetch SMALLINT value', async function() {
+    step('Insert invalid SMALLINT value', async function() {
         const res = await runQueryPromise('insert into test values (40000)');
         should.exist(res.err);
     });
@@ -135,7 +135,7 @@ describe('INT Table', function() {
         expect(val).to.equal(1);
     });
 
-    step('Fetch INT value', async function() {
+    step('Insert invalid INT value', async function() {
         const res = await runQueryPromise('insert into test values (3000000000)');
         should.exist(res.err);
     });
@@ -166,7 +166,7 @@ describe('BIGINT Table', function() {
         expect(val).to.equal(1n);
     });
 
-    step('Fetch BIGINT value', async function() {
+    step('Insert invalid BIGINT value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -195,7 +195,7 @@ describe('FLOAT Table', function() {
         expect(val).to.equal(1.0);
     });
 
-    step('Fetch FLOAT value', async function() {
+    step('Insert invalid FLOAT value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -224,7 +224,7 @@ describe('REAL Table', function() {
         expect(val).to.equal(1.0);
     });
 
-    step('Fetch REAL value', async function() {
+    step('Insert invalid REAL value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -253,7 +253,7 @@ describe('DATE Table', function() {
         expect(val).to.equal("2010-10-10");
     });
 
-    step('Fetch DATE value', async function() {
+    step('Insert invalid DATE value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -282,7 +282,7 @@ describe('DATETIME Table', function() {
         expect(val).to.equal("2010-10-10 23:59:59.000");
     });
 
-    step('Fetch DATETIME value', async function() {
+    step('Insert invalid DATETIME value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -312,7 +312,7 @@ describe('TIMESTAMP Table', function() {
         expect(val).to.equal("2010-10-10 00:00:00.000");
     });
 
-    step('Fetch TIMESTAMP value', async function() {
+    step('Insert invalid TIMESTAMP value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("false")');
         should.exist(res.err);
     });
@@ -325,7 +325,7 @@ describe('TIMESTAMP Table', function() {
 
 describe('VARCHAR Table', function() {
     step('Create VARCHAR Table', async function() {
-        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (t varchar(20))');
+        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (t VARCHAR(20))');
         should.not.exist(res.err);
     });
 
@@ -341,7 +341,7 @@ describe('VARCHAR Table', function() {
         expect(val.trim()).to.equal("test");
     });
 
-    step('Fetch VARCHAR value', async function() {
+    step('Insert invalid VARCHAR value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("this is more than just 20 characters, no need to count")');
         should.exist(res.err);
     });
@@ -354,12 +354,12 @@ describe('VARCHAR Table', function() {
 
 describe('NVARCHAR Table', function() {
     step('Create NVARCHAR Table', async function() {
-        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (t varchar(20))');
+        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (t NVARCHAR(20))');
         should.not.exist(res.err);
     });
 
     step('Insert into NVARCHAR Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('test')");
+        const res = await runQueryPromise("INSERT INTO test VALUES ('test'), (NULL)");
         should.not.exist(res.err);
     });
 
@@ -367,10 +367,12 @@ describe('NVARCHAR Table', function() {
         const res = await runQueryPromise('SELECT * FROM test');
         const keys =  Object.keys(res.data[0]);
         const val = res.data[0][keys[0]];
+        const nul = res.data[1][keys[0]];
         expect(val.trim()).to.equal("test");
+        expect(nul).to.equal(null);
     });
 
-    step('Fetch NVARCHAR value', async function() {
+    step('Insert invalid NVARCHAR value', async function() {
         const res = await runQueryPromise('INSERT INTO test values ("this is more than just 20 characters, no need to count")');
         should.exist(res.err);
     });
