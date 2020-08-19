@@ -91,7 +91,7 @@ const query2 = "SELECT * FROM public.large_table";
 const sqream = new Connection(config);
 
 (async () => {
-  const cursor = await sqream.executeCursor(query1);
+  const cursor = await sqream.executeCursor(query2);
   let count = 0;
   for await (let rows of cursor.fetchIterator(100)) { // fetch rows in chunks of 100
     count += rows.length;
