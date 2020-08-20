@@ -133,7 +133,7 @@ const sqream = new Connection(config);
 });
 ```
 
-## Input placeholders
+## Input Placeholders
 
 Input placeholders allows to have queries that include dynamic values, like user input, by placing placeholders in the query which get replaced with escaped values that were supplied to the function.
 
@@ -156,6 +156,29 @@ The different types of placeholders:
 - `%s` - string
 - `%d` - number
 - `%b` - boolean
+
+
+## Bigint Support
+
+The connector supports fetching bigint values from sqream, however web applicatons encounter the following error when sending JSON with bigint values:
+
+```
+TypeError: Do not know how to serialize a BigInt
+```
+
+JSON specification does not support bitint values even though they are supported by javascript engines, and you will run into this error when using `JSON.stringify`.
+
+To resolve this issue, objects with bigint values must be converted to string before serializing, and converted back after deserializing. The following will stringify bigints safely by converting them to string:
+
+```javascript
+const rows = [{test: 1n}]
+const json = JSON.stringify(rows, , (key, value) =>
+  typeof value === 'bigint'
+      ? value.toString()
+      : value // return everything else unchanged
+));
+console.log(json); // [{"test": "1"}]
+```
 
 ## Limitation
 
