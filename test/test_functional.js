@@ -1,6 +1,7 @@
 const should = require('chai').should();
 const expect = require('chai').expect;
 const Connection = require('../index');
+const { step } = require('mocha-steps');
 
 const config = {
     host: process.env.SQHOST || '127.0.0.1',
@@ -380,5 +381,83 @@ describe('NVARCHAR Table', function() {
     step('Clean up NVARCHAR table', async function() {
         const res = await runQueryPromise('DROP TABLE test');
         should.not.exist(res.err);
+    });
+});
+
+describe('Features', function() {
+    step('sqlSanitize', async function() {
+        let sql = Connection.sqlSanitize("SELECT %i FROM public.%i WHERE name = %s AND num > %d AND active = %b", [
+            "col1", "table2", "john's", 50, true
+        ]).statements[0];
+        expect(sql).to.eql(`SELECT col1 FROM public.table2 WHERE name = 'john''s' AND num > 50 AND active = TRUE`);
+
+        sql = Connection.sqlSanitize("%i", [`test 1`]).statements[0];
+        expect(sql).to.eql(`"test 1"`);
+
+        sql = Connection.sqlSanitize("%i", [`"test"`]).statements[0];
+        expect(sql).to.eql(`"""test"""`);
+
+        sql = Connection.sqlSanitize("select 'select 1;'; select 2;", []);
+        expect(sql.statements[0]).to.eql(`select 'select 1;'`);
+        expect(sql.statements[1]).to.eql(`select 2`);
+    });
+
+    step('Connect', async function() {
+        const sqream = new Connection(config);
+
+        const conn = await sqream.connect();
+        let res = await conn.execute("select 1");
+        expect(res.length).to.eql(1);
+
+        res = await conn.execute("select 2");
+        expect(res.length).to.eql(1);
+
+        let closed = false;
+        conn.onClose.then(() => closed = true);
+        await conn.disconnect();
+        expect(closed).to.eql(true);
+    });
+
+    step('executeCursor', async function() {
+        const conn = new Connection(config);
+
+        await conn.execute("CREATE OR REPLACE TABLE test (bool_column bool)");
+        await conn.execute("INSERT INTO test VALUES (false), (false), (false), (true)");
+
+        let cursor = await conn.executeCursor("SELECT * FROM test");
+        let first = null;
+        let last = null;
+        let count = 0;
+        try {
+            for await(let rows of cursor.fetchIterator(2)) {
+                count += rows.length;
+                if (first === null) first = rows[0].bool_column;
+                expect(rows.length).to.eql(2);
+                last = rows.pop().bool_column;
+            }
+        } catch (e) {
+            await cursor.close();
+            throw e;
+        }
+
+        await conn.execute('DROP TABLE test');
+        await cursor.close();
+
+        expect(count).to.eql(4);
+        expect(first).to.eql(0);
+        expect(last).to.eql(1);
+    });
+
+    step('networkTimeout', async function() {
+        const conn = new Connection(config);
+        conn.networkTimeout = 50;
+        let message = null;
+        try {
+            await conn.execute("select 1");
+        } catch (e) {
+            message = e.message
+        }
+        expect(message).to.be.a('string');
+        expect(message.toLowerCase()).to.include('timed out');
     });
 });
