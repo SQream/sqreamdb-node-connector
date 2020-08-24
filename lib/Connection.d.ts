@@ -77,6 +77,7 @@ export interface IConnection {
   config: IConnectionConfig;
   connect(sessionParams?: {[param: string]: string|number|null|boolean}): Promise<IConnectionReady>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
+  executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
 }
 
 export interface ISqConnection {
@@ -93,6 +94,7 @@ export interface ISqConnection {
 }
 
 export default class Connection implements IConnection {
+  networkTimeout: number;
   config: IConnectionConfig;
   connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
