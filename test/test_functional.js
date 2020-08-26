@@ -440,8 +440,8 @@ describe('Features', function() {
             throw e;
         }
 
-        await conn.execute('DROP TABLE test');
         await cursor.close();
+        await conn.execute('DROP TABLE test');
 
         expect(count).to.eql(4);
         expect(first).to.eql(0);
