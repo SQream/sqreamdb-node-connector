@@ -39,7 +39,6 @@ sqream.execute(query1).then((data) => {
 }, (err) => {
   console.error(err);
 });
-
 ```
 
 Run your file with node:
@@ -65,7 +64,6 @@ const config = {
   connectDatabase: '<your database>',
   cluster: true,
 };
-
 ```
 
 ## Secure connection
@@ -79,7 +77,17 @@ const config = {
   connectDatabase: '<your database>',
   is_ssl: true
 };
+```
 
+## Network Timeout
+
+If you run in into a timeout error message, you may need to increase the the connection's timeout. The default timeout is 60000 (60 seconds).
+
+To increase it you need to change a property in the connection like so:
+
+```javascript
+const sqream = new Connection(config);
+sqream.networkTimeout = 1800000 // 30 minutes
 ```
 
 ## Lazyloading
