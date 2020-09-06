@@ -83,11 +83,11 @@ const config = {
 
 If you run in into a timeout error message, you may need to increase the the connection's timeout. The default timeout is 60000 (60 seconds).
 
-To increase it you need to change a property in the connection like so:
+To increase it you need to change a property in the config like so:
 
 ```javascript
+config.networkTimeout = 1800000 // 30 minutes
 const sqream = new Connection(config);
-sqream.networkTimeout = 1800000 // 30 minutes
 ```
 
 ## Lazyloading

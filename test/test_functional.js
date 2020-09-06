@@ -449,8 +449,7 @@ describe('Features', function() {
     });
 
     step('networkTimeout', async function() {
-        const conn = new Connection(config);
-        conn.networkTimeout = 20;
+        const conn = new Connection({...config, networkTimeout: 30});
         let message = null;
         try {
             await conn.execute("select 1");

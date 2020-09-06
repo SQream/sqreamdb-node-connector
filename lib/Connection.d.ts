@@ -8,6 +8,7 @@ export interface IConnectionConfig {
   cluster?: boolean;
   is_ssl?: boolean;
   debug?: boolean;
+  networkTimeout?: number;
 }
 
 export interface IConnectionReady {
@@ -94,7 +95,6 @@ export interface ISqConnection {
 }
 
 export default class Connection implements IConnection {
-  networkTimeout: number;
   config: IConnectionConfig;
   connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
