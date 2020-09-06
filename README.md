@@ -81,7 +81,7 @@ const config = {
 
 ## Network Timeout
 
-If you run in into a timeout error message, you may need to increase the the connection's timeout. The default timeout is 60000 (60 seconds).
+If you run in into a timeout error message, you may need to increase the the connection's timeout. The default timeout is 180000 (3 minutes).
 
 To increase it you need to change a property in the config like so:
 
