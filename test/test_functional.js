@@ -448,15 +448,16 @@ describe('Features', function() {
         expect(last).to.eql(1);
     });
 
-    step('networkTimeout', async function() {
-        const conn = new Connection({...config, networkTimeout: 30});
-        let message = null;
-        try {
-            await conn.execute("select 1");
-        } catch (e) {
-            message = e.message
-        }
-        expect(message).to.be.a('string');
-        expect(message.toLowerCase()).to.include('timed out');
-    });
+    // @TODO: test is too flaky
+    // step('networkTimeout', async function() {
+    //     const conn = new Connection({...config, networkTimeout: 30});
+    //     let message = null;
+    //     try {
+    //         await conn.execute("select 1");
+    //     } catch (e) {
+    //         message = e.message
+    //     }
+    //     expect(message).to.be.a('string');
+    //     expect(message.toLowerCase()).to.include('timed out');
+    // });
 });
