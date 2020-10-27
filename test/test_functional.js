@@ -448,6 +448,16 @@ describe('Features', function() {
         expect(last).to.eql(1);
     });
 
+    step('Get Protocol Version', async function() {
+        const sqream = new Connection(config);
+
+        const conn = await sqream.connect();
+        expect(conn.getClientProtocolVersion()).to.be.gt(5);
+        expect(conn.getServerProtocolVersion()).to.be.gt(5);
+
+        await conn.disconnect();
+    });
+
     // @TODO: test is too flaky
     // step('networkTimeout', async function() {
     //     const conn = new Connection({...config, networkTimeout: 30});

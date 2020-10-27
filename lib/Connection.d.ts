@@ -20,6 +20,8 @@ export interface IConnectionReady {
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
+  getServerProtocolVersion(): number;
+  getClientProtocolVersion(): number;
 }
 
 export interface IQueryReady<T> {
@@ -92,6 +94,8 @@ export interface ISqConnection {
   isAlive(): boolean;
   firstBuffer(timeout?: number): Promise<Buffer>;
   setMaxRows(maxRows: number): void;
+  getClientProtocolVersion(): number;
+  getServerProtocolVersion(): number|undefined;
 }
 
 export default class Connection implements IConnection {
