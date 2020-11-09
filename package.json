@@ -5,7 +5,7 @@
   "main": "index.js",
   "types": "lib/Connection.d.ts",
   "scripts": {
-    "test": "mocha ./test/test_functional.js --require mocha-steps --timeout 4000",
+    "test": "mocha ./test/test_functional.js --require mocha-steps --timeout 15000",
     "test:perf": "mocha ./test/test_perf.js --require mocha-steps --timeout 600000 --max_old_space_size=16000"
   },
   "author": "Erez Avny",
