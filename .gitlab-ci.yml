@@ -6,6 +6,8 @@ before_script:
   - "git checkout $CI_COMMIT_SHA"
   - "git status"
 tests_and_benchmark:
+  tags:
+    - connectors
   script:
     - "npm install --ignore-scripts"
     - "npm test"
