@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- NodeJS 10.x or later
+- NodeJS 12.x or newer
 
 ## Installation
 
@@ -148,13 +148,13 @@ Input placeholders allows to have queries that include dynamic values, like user
 ```javascript
 const sqream = new Connection(config);
 const sql = "SELECT %i FROM public.%i WHERE name = %s AND num > %d AND active = %b";
-sqream.execute(sql, "col1", "table2", "john's", 50, true)'
+sqream.execute(sql, "col1", "table2", "john's", 50, true);
 ```
 
 The above sql gets converted internally to the following:
 
 
-```
+```sql
 SELECT "col1" FROM public."table2" WHERE name = 'john''s' AND num > 50 AND active = TRUE
 ```
 
@@ -176,23 +176,26 @@ TypeError: Do not know how to serialize a BigInt
 
 JSON specification does not support bitint values even though they are supported by javascript engines, and you will run into this error when using `JSON.stringify`.
 
-To resolve this issue, objects with bigint values must be converted to string before serializing, and converted back after deserializing. The following will stringify bigints safely by converting them to string:
+To resolve this issue, objects with bigint values must be converted to string when serializing, and converted back after deserializing. The following will alter the BitInt prototype to convert the number to string when JSON stringified:
 
 ```javascript
-const rows = [{test: 1n}]
-const json = JSON.stringify(rows, , (key, value) =>
-  typeof value === 'bigint'
-      ? value.toString()
-      : value // return everything else unchanged
-));
-console.log(json); // [{"test": "1"}]
+BigInt.prototype.toJSON = function () { return this.toString(); }
+
+const rows = [{test: 1n}];
+console.log(JSON.stringify(rows)); // [{"test": "1"}]
 ```
+
+## Numeric (BigDecimal) Suppport
+
+Node does not yet support BigDecimal primitives, therfore the connector will provide Numeric types as an object comprising of a BigInt number and a scale number. This object will be converted to a decimal string when JSON stringified.
+
+For performing math operations on Numeric types, consider using BigDecimal/BigInt centric libraries on npm.
 
 ## Limitation
 
 The node application which utilizes the sqream connector should consider the heap size node configuration.
 
- When processing large datasets, it is recommended to increase the application heap size with the `--max_old_space_size` node run flag:
+When processing large datasets, it is recommended to increase the application heap size with the `--max_old_space_size` node run flag:
 
 ```
 node --max_old_space_size={heapSize} my-application.js
