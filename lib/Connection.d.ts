@@ -74,6 +74,7 @@ export enum DllType {
   DateTime = "ftDateTime",
   Date = "ftDate",
   Blob = "ftBlob",
+  Numeric = "ftNumeric",
 }
 
 export interface IConnection {

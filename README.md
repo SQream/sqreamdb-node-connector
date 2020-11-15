@@ -187,7 +187,7 @@ console.log(JSON.stringify(rows)); // [{"test": "1"}]
 
 ## Numeric (BigDecimal) Suppport
 
-Node does not yet support BigDecimal primitives, therfore the connector will provide Numeric types as an object comprising of a BigInt number and a scale number. This object will be converted to a decimal string when JSON stringified.
+Node does not yet support BigDecimal primitives, therfore the connector will provide Numeric types as an object comprising of a BigInt number and a scale number. This object will be converted to a decimal string when it is JSON stringified.
 
 For performing math operations on Numeric types, consider using BigDecimal/BigInt centric libraries on npm.
 

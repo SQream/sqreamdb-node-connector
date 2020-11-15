@@ -384,6 +384,48 @@ describe('NVARCHAR Table', function() {
     });
 });
 
+
+describe('NUMERIC Table', function() {
+    step('Create NUMERIC Table', async function() {
+        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (bigint_column NUMERIC(4, 2))');
+        should.not.exist(res.err);
+    });
+
+    step('Insert into NUMERIC Table', async function() {
+        const res = await runQueryPromise('INSERT INTO test VALUES (12.34), (1), (-1), (0), (0.1), (0.01), (10.0)');
+        should.not.exist(res.err);
+    });
+
+    step('Fetch NUMERIC value', async function() {
+        const res = await runQueryPromise('SELECT * FROM test');
+        const keys =  Object.keys(res.data[0]);
+        let val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("12.34");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("1.0");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("-1.0");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("0.0");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("0.1");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("0.01");
+        val = res.data.shift()[keys[0]];
+        expect(val.toString()).to.equal("10.0");
+    });
+
+    step('Insert invalid NUMERIC value', async function() {
+        const res = await runQueryPromise('INSERT INTO test values (1000)');
+        should.exist(res.err);
+    });
+
+    step('Clean up NUMERIC table', async function() {
+        const res = await runQueryPromise('DROP TABLE test');
+        should.not.exist(res.err);
+    });
+});
+
 describe('Features', function() {
     step('sqlSanitize', async function() {
         let sql = Connection.sqlSanitize("SELECT %i FROM public.%i WHERE name = %s AND num > %d AND active = %b", [
