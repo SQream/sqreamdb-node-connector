@@ -20,8 +20,17 @@ export interface IConnectionReady {
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
+  executeInsert(): IQueryPut;
   getServerProtocolVersion(): number;
   getClientProtocolVersion(): number;
+}
+
+export class SqNumeric {
+  bigint: bigint;
+  scale: number;
+  toString(): string;
+  toJSON(): string;
+  static from(value: number|string|bigint, scale?: number): SqNumeric;
 }
 
 export interface IQueryReady<T> {
@@ -36,18 +45,29 @@ export interface IQueryExecute<T> {
   execute(): Promise<IQueryFetch<T>>;
 }
 
+export interface IQueryPut {
+  columns: IQueryType[], 
+  putRow(row: (string|number|null|bigint|SqNumeric)[]): Promise<boolean>,
+  flush(): Promise<void>,
+  close(): Promise<void>
+}
+
 export interface IQueryFetch<T> {
   queryTypeNamed: IQueryTypeNamed[];
   close: () => Promise<void>
   fetchIterator: (chunkSize?: number) => AsyncGenerator<T[]>
   fetchAll(rowLimit?: number): Promise<T[]>;
+  put(): IQueryPut
 }
 
-export interface IQueryTypeNamed {
+export interface IQueryType {
   isTrueVarChar: boolean;
-  name: string;
   nullable: boolean;
   type: [ DllType, number, number ];
+}
+
+export interface IQueryTypeNamed extends IQueryType {
+  name: string;
 }
 
 export interface IExtractedStrings {
@@ -104,6 +124,7 @@ export default class Connection implements IConnection {
   connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
+  executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
   constructor(config: IConnectionConfig);
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};

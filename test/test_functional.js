@@ -13,13 +13,6 @@ const config = {
     is_ssl: false
 };
 
-function runQuery(query, cb) {
-    const myConnection = new Connection(config);
-    myConnection.runQuery(query, function (err, data){
-        cb(err, data)
-    }, null );
-}
-
 
 function runQueryPromise(query) {
     return new Promise(function (resolve) {
@@ -30,6 +23,11 @@ function runQueryPromise(query) {
     })
 }
 
+function runInsert(query) {
+    const myConnection = new Connection(config);
+    return myConnection.executeInsert(query);    
+}
+
 describe('Boolean Table', function() {
     step('Create Bool Table', async function() {
         const res = await runQueryPromise('CREATE OR REPLACE TABLE test (bool_column bool)');
@@ -37,8 +35,12 @@ describe('Boolean Table', function() {
     });
 
     step('Insert into Bool Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (false)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (false)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([false]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch Bool value', async function() {
@@ -66,8 +68,12 @@ describe('TINYINT Table', function() {
     });
 
     step('Insert into TINYINT Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch TINYINT value', async function() {
@@ -96,8 +102,12 @@ describe('SMALLINT Table', function() {
     });
 
     step('Insert into SMALLINT Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch SMALLINT value', async function() {
@@ -125,8 +135,12 @@ describe('INT Table', function() {
     });
 
     step('Insert into INT Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch INT value', async function() {
@@ -156,8 +170,12 @@ describe('BIGINT Table', function() {
     });
 
     step('Insert into BIGINT Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch BIGINT value', async function() {
@@ -185,8 +203,12 @@ describe('FLOAT Table', function() {
     });
 
     step('Insert into FLOAT Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1.0)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1.0)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1.0]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch FLOAT value', async function() {
@@ -214,8 +236,12 @@ describe('REAL Table', function() {
     });
 
     step('Insert into REAL Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (1.0)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (1.0)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([1.0]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch REAL value', async function() {
@@ -243,8 +269,12 @@ describe('DATE Table', function() {
     });
 
     step('Insert into DATE Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10')");
-        should.not.exist(res.err);
+        // const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10')");
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow(['2010-10-10']);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch DATE value', async function() {
@@ -272,8 +302,12 @@ describe('DATETIME Table', function() {
     });
 
     step('Insert into DATETIME Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10 23:59:59')");
-        should.not.exist(res.err);
+        // const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10 23:59:59')");
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow(['2010-10-10 23:59:59']);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch DATETIME value', async function() {
@@ -302,8 +336,12 @@ describe('TIMESTAMP Table', function() {
     });
 
     step('Insert into TIMESTAMP Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10')");
-        should.not.exist(res.err);
+        // const res = await runQueryPromise("INSERT INTO test VALUES ('2010-10-10')");
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow(['2010-10-10']);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch TIMESTAMP value', async function() {
@@ -331,8 +369,12 @@ describe('VARCHAR Table', function() {
     });
 
     step('Insert into VARCHAR Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('test')");
-        should.not.exist(res.err);
+        // const res = await runQueryPromise("INSERT INTO test VALUES ('test')");
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow(['test']);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch VARCHAR value', async function() {
@@ -360,8 +402,13 @@ describe('NVARCHAR Table', function() {
     });
 
     step('Insert into NVARCHAR Table', async function() {
-        const res = await runQueryPromise("INSERT INTO test VALUES ('test'), (NULL)");
-        should.not.exist(res.err);
+        // const res = await runQueryPromise("INSERT INTO test VALUES ('test'), (NULL)");
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow(['test']);
+        putter.putRow([null]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch NVARCHAR value', async function() {
@@ -392,8 +439,18 @@ describe('NUMERIC Table', function() {
     });
 
     step('Insert into NUMERIC Table', async function() {
-        const res = await runQueryPromise('INSERT INTO test VALUES (12.34), (1), (-1), (0), (0.1), (0.01), (10.0)');
-        should.not.exist(res.err);
+        // const res = await runQueryPromise('INSERT INTO test VALUES (12.34), (1), (-1), (0), (0.1), (0.01), (10.0)');
+        // should.not.exist(res.err);
+        const putter = await runInsert('INSERT INTO test VALUES (?)');
+        putter.putRow([12.34]);
+        putter.putRow([1]);
+        putter.putRow([-1]);
+        putter.putRow([0]);
+        putter.putRow([.1]);
+        putter.putRow([.01]);
+        putter.putRow([10.0]);
+        await putter.flush();
+        await putter.close();
     });
 
     step('Fetch NUMERIC value', async function() {

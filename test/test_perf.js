@@ -33,11 +33,25 @@ const types = {
   'TEXT': 10,
   'VARCHAR': 10,
   'DATE': 4,
-  'DATETIME': 8, 
+  'DATETIME': 8
 };
 const columnCounts = [1, 10, 100];
 const varcharSizes = [10, 100, 400];
 const rowCounts = [1, 1000, 10000, 100000, 1000000];
+
+const samples = {
+  'BOOL': 1,
+  'TINYINT': 1,
+  'SMALLINT': 2,
+  'INT': 1,
+  'BIGINT': BigInt(1),
+  'REAL': 1,
+  'DOUBLE': 1,
+  'TEXT': 'abcdef',
+  'VARCHAR': 'abcdef',
+  'DATE': '2020-02-02',
+  'DATETIME': '2020-02-02 20:20:22'
+}
 
 const logs = [];
 
@@ -58,7 +72,7 @@ describe("Warmup", () => {
 })
 
 for (let type in types) {
-  describe(type, function() {
+  describe("Select " + type, function() {
     for (let columnCount of columnCounts) {
       for (let rowCount of rowCounts) {
         if (['TEXT', 'VARCHAR'].includes(type)) {
@@ -111,7 +125,7 @@ for (let type in types) {
   });
 }
 
-describe('All types', function() {
+describe('Select all types', function() {
   step(`200 Columns`, async function() {
     let count = 0;
     const columnCount = (200 / Object.keys(types).length)|0;
@@ -132,7 +146,83 @@ describe('All types', function() {
     expect(count).to.eq(rowCount);
     const rowlength = Object.values(types).map((l) => l * columnCount).reduce((sum, n) => sum + n, 0);
     const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
-    logs.push({field: "ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+    logs.push({field: "Select ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+  });
+});
+
+
+const stringSample = new Array(400).fill("1").join("");
+
+for (let type in types) {
+  describe("Insert " + type, function() {
+    for (let columnCount of columnCounts) {
+      for (let rowCount of rowCounts) {
+        if (['TEXT', 'VARCHAR'].includes(type)) {
+          for (let vSize of varcharSizes) {
+            step(`Columns ${columnCount}, column size ${vSize}, row count ${rowCount}`, async function() {
+              let cols = [...Array(columnCount)].map((x, i) => `"${columnName(type, {name: i, length: vSize})}"`).join(", ");
+              let count = 0;
+              const putter = await conn.executeInsert(`insert into random limit (${cols}) values (${Array(columnCount).fill("?").join(", ")})`);
+              const row = new Array(columnCount).fill(stringSample.substring(0, vSize));
+              const start = Date.now();
+              for (let i = 0; i < rowCount; i++) {
+                await putter.putRow(row);
+                count++;
+              }
+              await putter.flush();
+              const totalTime = Date.now() - start;
+              await putter.close()
+              expect(count).to.eq(rowCount);
+              const rowlength = vSize * columnCount;
+              const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
+              logs.push({field: "Insert " + type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+            });
+          }
+        } else {
+          step(`Columns ${columnCount}, column size ${types[type]}, row count ${rowCount}`, async function() {
+            let cols = [...Array(columnCount)].map((x, i) => `"${columnName(type, {name: i})}"`).join(", ");
+            let count = 0;
+            const putter = await conn.executeInsert(`insert into random limit (${cols}) values (${Array(columnCount).fill("?").join(", ")})`);
+            const row = [...new Array(columnCount)].map((x, i) => samples[type]);
+            const start = Date.now();
+            for (let i = 0; i < rowCount; i++) {
+              await putter.putRow(row);
+              count++;
+            }
+            await putter.flush();
+            const totalTime = Date.now() - start;
+            await putter.close()
+            expect(count).to.eq(rowCount);
+            const rowlength = vSize * columnCount;
+            const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
+            logs.push({field: "Insert " + type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+          });
+        }
+      }
+    }
+  });
+}
+
+describe('Insert all types', function() {
+  step(`200 Columns`, async function() {
+    let count = 0;
+    const columnCount = (200 / Object.keys(types).length)|0;
+    const rowCount = 100000;
+    let cols = Object.keys(types).map((type) => [...Array(columnCount)].map((x, i) => `"${columnName(type, {name: i})}"`).join(", ")).join(", ");
+    const putter = await conn.executeInsert(`insert into random limit (${cols}) values (${Array(columnCount).fill("?").join(", ")})`);
+    const row = Object.keys(types).map((type) => [...Array(columnCount)].map((x, i) => samples[type])).flat()
+    const start = Date.now();
+    for (let i = 0; i < rowCount; i++) {
+      await putter.putRow(row);
+      count++;
+    }
+    await putter.flush();
+    const totalTime = Date.now() - start;
+    await it.close();
+    expect(count).to.eq(rowCount);
+    const rowlength = Object.values(types).map((l) => l * columnCount).reduce((sum, n) => sum + n, 0);
+    const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
+    logs.push({field: "Insert ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
   });
 });
 
