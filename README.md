@@ -90,6 +90,40 @@ config.networkTimeout = 1800000 // 30 minutes
 const sqream = new Connection(config);
 ```
 
+## Network Insert
+
+It's possible to perform insert through a prepared statement:
+
+```javascript
+const ddl = "CREATE OR REPLACE TABLE temp_table (col1 INT, col2 TEXT)";
+const insertQuery = "INSERT INTO temp_table VALUES (?, ?)";
+const sqream = new Connection(config);
+
+
+(async () => {
+  await sqream.execute(ddl);
+  const inserter = await sqream.executeInsert(insertQuery);
+  let insertedRows = 0;
+  try {
+    for (let i = 0; i < 10; i++) {
+      await inserter.putRow([i, "test"]);
+      insertedRows++;
+    }
+    await inserter.flush();
+    await inserter.close();
+
+    return insertedRows;
+  } catch (e) {
+    inserter.close();
+    throw e;
+  }
+})().then((total) => {
+  console.log(total, "rows inserted");
+}, (err) => {
+  console.error(err);
+})
+```
+
 ## Lazyloading
 
 If you want to process rows without keeping them in memory, you can lazyload the rows:
@@ -101,11 +135,17 @@ const sqream = new Connection(config);
 (async () => {
   const cursor = await sqream.executeCursor(query2);
   let count = 0;
-  for await (let rows of cursor.fetchIterator(100)) { // fetch rows in chunks of 100
-    count += rows.length;
+  try {
+    for await (let rows of cursor.fetchIterator(100)) { // fetch rows in chunks of 100
+      count += rows.length;
+    }
+    await cursor.close();
+    
+    return count;
+  } catch (e) {
+    cursor.close();
+    throw e;
   }
-  await cursor.close();
-  return count;
 })().then((total) => {
   console.log('Total rows', total);
 }, (err) => {
