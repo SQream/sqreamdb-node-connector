@@ -30,14 +30,17 @@ const types = {
   'BIGINT': 8,
   'REAL': 4,
   'DOUBLE': 8,
-  'TEXT': 10,
-  'VARCHAR': 10,
+  'TEXT': 30,
+  'VARCHAR': 30,
   'DATE': 4,
   'DATETIME': 8
 };
-const columnCounts = [1, 10, 100];
-const varcharSizes = [10, 100, 400];
-const rowCounts = [1, 1000, 10000, 100000, 1000000];
+// const columnCounts = [1, 10, 100];
+const columnCounts = [10];
+// const varcharSizes = [10, 100, 400];
+const varcharSizes = [400];
+// const rowCounts = [1, 1000, 10000, 100000, 1000000];
+const rowCounts = [1000000];
 
 const samples = {
   'BOOL': 1,
@@ -47,13 +50,14 @@ const samples = {
   'BIGINT': BigInt(1),
   'REAL': 1,
   'DOUBLE': 1,
-  'TEXT': 'abcdef',
-  'VARCHAR': 'abcdef',
-  'DATE': '2020-02-02',
-  'DATETIME': '2020-02-02 20:20:22'
+  'TEXT': 'abcdefghi0abcdefghi0abcdefghi0',
+  'VARCHAR': 'abcdefghi0abcdefghi0abcdefghi0',
+  'DATE': new Date('2020-02-02'),
+  'DATETIME': new Date('2020-02-02 20:20:22')
 }
 
 const logs = [];
+const logsInsert = [];
 
 describe("Warmup", () => {
   step("all columns", async () => {
@@ -146,7 +150,7 @@ describe('Select all types', function() {
     expect(count).to.eq(rowCount);
     const rowlength = Object.values(types).map((l) => l * columnCount).reduce((sum, n) => sum + n, 0);
     const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
-    logs.push({field: "Select ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+    logs.push({field: "ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
   });
 });
 
@@ -175,7 +179,7 @@ for (let type in types) {
               expect(count).to.eq(rowCount);
               const rowlength = vSize * columnCount;
               const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
-              logs.push({field: "Insert " + type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+              logsInsert.push({field: type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
             });
           }
         } else {
@@ -193,9 +197,9 @@ for (let type in types) {
             const totalTime = Date.now() - start;
             await putter.close()
             expect(count).to.eq(rowCount);
-            const rowlength = vSize * columnCount;
+            const rowlength = types[type] * columnCount;
             const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
-            logs.push({field: "Insert " + type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+            logsInsert.push({field: type, "row length": rowlength, columns: columnCount, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
           });
         }
       }
@@ -218,16 +222,19 @@ describe('Insert all types', function() {
     }
     await putter.flush();
     const totalTime = Date.now() - start;
-    await it.close();
+    await putter.close();
     expect(count).to.eq(rowCount);
     const rowlength = Object.values(types).map((l) => l * columnCount).reduce((sum, n) => sum + n, 0);
     const timePerMillion = (totalTime / (rowCount * rowlength) * 1000000)|0;
-    logs.push({field: "Insert ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
+    logsInsert.push({field: "ALL", "row length": rowlength, columns: columnCount * Object.keys(types).length, rows: rowCount, "total ms": totalTime, "per 1M bytes": timePerMillion});
   });
 });
 
 describe('Results', function() {
   step(`Results`, async function() {
+    console.log("=== Select ===")
     console.table(logs)
+    console.log("=== Insert ===")
+    console.table(logsInsert);
   });
 });
