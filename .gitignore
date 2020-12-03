@@ -2,3 +2,4 @@
 .idea/
 *.tgz
 /test/test_sqream.log
+temp.js

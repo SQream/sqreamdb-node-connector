@@ -6,3 +6,4 @@ test
 Jenkinsfile
 nodejs.mk
 node_modules
+temp.js
