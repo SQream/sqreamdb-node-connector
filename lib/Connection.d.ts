@@ -20,7 +20,7 @@ export interface IConnectionReady {
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
-  executeInsert(): IQueryPut;
+  executeInsert(): Promise<IQueryPut>;
   getServerProtocolVersion(): number;
   getClientProtocolVersion(): number;
 }
