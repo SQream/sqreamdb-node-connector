@@ -25,14 +25,6 @@ export interface IConnectionReady {
   getClientProtocolVersion(): number;
 }
 
-export class SqNumeric {
-  bigint: bigint;
-  scale: number;
-  toString(): string;
-  toJSON(): string;
-  static from(value: number|string|bigint, scale?: number): SqNumeric;
-}
-
 export interface IQueryReady<T> {
   sql: string;
   statementId: number;
@@ -47,7 +39,7 @@ export interface IQueryExecute<T> {
 
 export interface IQueryPut {
   columns: IQueryType[], 
-  putRow(row: (string|number|null|bigint|SqNumeric)[]): Promise<boolean>,
+  putRow(row: (string|number|null|bigint|ISqNumeric)[]): Promise<boolean>,
   flush(): Promise<void>,
   close(): Promise<void>
 }
@@ -119,6 +111,14 @@ export interface ISqConnection {
   getServerProtocolVersion(): number|undefined;
 }
 
+declare class ISqNumeric {
+  bigint: bigint;
+  scale: number;
+  toString(): string;
+  toJSON(): string;
+  static from(value: number|string|bigint, scale?: number): ISqNumeric;
+}
+
 export default class Connection implements IConnection {
   config: IConnectionConfig;
   connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
@@ -129,6 +129,7 @@ export default class Connection implements IConnection {
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
   static extractStrings(string: string): IExtractedStrings;
+  static SqNumeric: (new () => ISqNumeric) & {from(value: number|string|bigint, scale?: number): ISqNumeric;};
 }
 
 declare module '@sqream/sqreamdb' {
