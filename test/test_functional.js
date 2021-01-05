@@ -432,9 +432,9 @@ describe('NVARCHAR Table', function() {
 });
 
 
-describe('NUMERIC Table', function() {
+xdescribe('NUMERIC Table', function() {
     step('Create NUMERIC Table', async function() {
-        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (bigint_column NUMERIC(4, 2))');
+        const res = await runQueryPromise('CREATE OR REPLACE TABLE test (numeric_column NUMERIC(4, 2))');
         should.not.exist(res.err);
     });
 
