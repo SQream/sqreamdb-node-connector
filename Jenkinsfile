@@ -4,9 +4,8 @@ if (params.version_num == "") {
 
 
 pipeline { 
-    agent {
-            label "x86_64_compilation"
-            } 
+    agent { label 'x86_64_compilation || build_5.74' }
+
     stages {
          stage("Set build number and build user"){
             steps {
