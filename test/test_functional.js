@@ -432,7 +432,7 @@ describe('NVARCHAR Table', function() {
 });
 
 
-xdescribe('NUMERIC Table', function() {
+describe('NUMERIC Table', function() {
     step('Create NUMERIC Table', async function() {
         const res = await runQueryPromise('CREATE OR REPLACE TABLE test (numeric_column NUMERIC(4, 2))');
         should.not.exist(res.err);
@@ -481,6 +481,98 @@ xdescribe('NUMERIC Table', function() {
         const res = await runQueryPromise('DROP TABLE test');
         should.not.exist(res.err);
     });
+});
+
+describe('Conneciton', function() {
+
+    step('Unsecured connection with unsecured worker', async function() {
+        const sqream = new Connection({...config});
+        let success = true;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = false;
+        }
+        expect(success, "Succesful connection").to.equal(true);
+    });
+
+    step('Unsecured connection with secured worker', async function() {
+        const sqream = new Connection({...config, port: 5001});
+        let success = false;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = true;
+        }
+        expect(success, "Unsuccesful connection").to.equal(true);
+    });
+
+    step('Secured connection with unsecured worker', async function() {
+        const sqream = new Connection({...config, is_ssl: true});
+        let success = false;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = true;
+        }
+        expect(success, "Unsuccesful connection").to.equal(true);
+    });
+
+    step('Secured connection with secured worker', async function() {
+        const sqream = new Connection({...config, port: 5001, is_ssl: true});
+        let success = true;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = false;
+        }
+        expect(success, "Succesful connection").to.equal(true);
+    });
+
+    step('Unsecured connection with unsecured load balancer', async function() {
+        const sqream = new Connection({...config, port: 3108, cluster: true});
+        let success = true;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = false;
+        }
+        expect(success, "Succesful connection").to.equal(true);
+    });
+
+    step('Unsecured connection with secured load balancer', async function() {
+        const sqream = new Connection({...config, port: 3109, cluster: true});
+        let success = false;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = true;
+        }
+        expect(success, "Unsuccesful connection").to.equal(true);
+    });
+
+    step('Secured connection with unsecured load balancer', async function() {
+        const sqream = new Connection({...config, port: 3108, is_ssl: true, cluster: true});
+        let success = false;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = true;
+        }
+        expect(success, "Unsuccesful connection").to.equal(true);
+    });
+
+    step('Secured connection with secured load balancer', async function() {
+        const sqream = new Connection({...config, port: 3109, is_ssl: true, cluster: true});
+        let success = true;
+        try {
+            (await sqream.connect()).disconnect();
+        } catch(e) {
+            success = false;
+        }
+        expect(success, "Succesful connection").to.equal(true);
+    });
+
 });
 
 describe('Features', function() {

@@ -20,9 +20,10 @@ export interface IConnectionReady {
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
-  executeInsert(): Promise<IQueryPut>;
+  executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
   getServerProtocolVersion(): number;
   getClientProtocolVersion(): number;
+  getSqreamVersion(): string|undefined;
 }
 
 export interface IQueryReady<T> {
@@ -120,16 +121,12 @@ declare class ISqNumeric {
 }
 
 export default class Connection implements IConnection {
-  config: IConnectionConfig;
-  connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
-  execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
-  executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
-  executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
   constructor(config: IConnectionConfig);
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
   static extractStrings(string: string): IExtractedStrings;
-  static SqNumeric: (new () => ISqNumeric) & {from(value: number|string|bigint, scale?: number): ISqNumeric;};
+  static SqNumeric: (new () => ISqNumeric) & {from(value: number|string|bigint|ISqNumeric, scale?: number): ISqNumeric;};
+  static versionCompare(v1: string|undefined, v2: string|undefined): -1|0|1|undefined;
 }
 
 declare module '@sqream/sqreamdb' {
