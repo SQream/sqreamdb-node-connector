@@ -473,7 +473,7 @@ describe('NUMERIC Table', function() {
     });
 
     step('Insert invalid NUMERIC value', async function() {
-        const res = await runQueryPromise('INSERT INTO test values (1000)');
+        const res = await runQueryPromise(`INSERT INTO test values ('aaa')`);
         should.exist(res.err);
     });
 
@@ -483,7 +483,7 @@ describe('NUMERIC Table', function() {
     });
 });
 
-describe('Conneciton', function() {
+describe('Connection', function() {
 
     step('Unsecured connection with unsecured worker', async function() {
         const sqream = new Connection({...config});
