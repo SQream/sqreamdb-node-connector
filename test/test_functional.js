@@ -483,7 +483,7 @@ describe('NUMERIC Table', function() {
     });
 });
 
-describe('Connection', function() {
+xdescribe('Connection', function() {
 
     step('Unsecured connection with unsecured worker', async function() {
         const sqream = new Connection({...config});
