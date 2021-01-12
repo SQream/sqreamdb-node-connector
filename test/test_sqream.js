@@ -4,7 +4,6 @@ const fs = require('fs');
 const async = require('async');
 const path = require('path');
 const Connection = require('../index');
-const moment = require('moment');
 const net = require('net');
 const Stream = require('stream');
 const readableStream =  require('stream').Readable;
@@ -30,10 +29,10 @@ writeToLogFile('node.js start!');
 function convertDateToInt(value) {
   var result = 0;
   if (value != null){
-    const date = moment(value);
-    var year = date.year();
-    var month = date.month() + 1;
-    var day = date.date();
+    const date = new Date(value);
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
 
     month = (month + 9) % 12;
     year  = year - parseInt(month/10);
@@ -107,11 +106,11 @@ const dataTypeToBuffer = {
   ftDateTime: function (value) {
     var buf = Buffer.alloc(8);
     if (value != null){
-      const dt = moment(value);
-      var nTime = dt.hour() * 60 * 60;
-      nTime = nTime + dt.minutes() * 60;
+      const dt = new Date(value);
+      var nTime = dt.getHour() * 60 * 60;
+      nTime = nTime + dt.getMinutes() * 60;
       nTime = nTime + dt.second();
-      nTime = nTime + dt.format('SSS');
+      nTime = nTime + dt.getMilliseconds();
       var date = convertDateToInt(value);
       var dateTime = (BigInt(date) << BigInt(32)) | BigInt(nTime);
       buf.writeBigInt64LE(dateTime, 0);
