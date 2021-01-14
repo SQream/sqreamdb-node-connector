@@ -121,6 +121,11 @@ declare class ISqNumeric {
 }
 
 export default class Connection implements IConnection {
+  config: IConnectionConfig;
+  connect(sessionParams?: {[param: string]: string|number|boolean|null}): Promise<IConnectionReady>;
+  execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
+  executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
+  executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
   constructor(config: IConnectionConfig);
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
