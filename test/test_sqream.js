@@ -110,7 +110,7 @@ const dataTypeToBuffer = {
       var nTime = dt.getHour() * 60 * 60;
       nTime = nTime + dt.getMinutes() * 60;
       nTime = nTime + dt.getSeconds();
-      nTime = nTime + dt.getMilliseconds();
+      nTime = nTime * 1000 + dt.getMilliseconds();
       var date = convertDateToInt(value);
       var dateTime = (BigInt(date) << BigInt(32)) | BigInt(nTime);
       buf.writeBigInt64LE(dateTime, 0);
