@@ -10,6 +10,8 @@ const readableStream =  require('stream').Readable;
 const logFilePath =  __dirname+ '/test_sqream.log';
 
 var statementId;
+const nbits64 = BigInt(2) ** BigInt(64) - BigInt(1);
+const n64 = BigInt(64);
 
 if (fs.existsSync(logFilePath)) {
   fs.unlinkSync(logFilePath)
@@ -129,6 +131,13 @@ const dataTypeToBuffer = {
   ftShort: function (value) {
     var buf = Buffer.alloc(2);
     buf.writeInt16LE(value, 0, 2);
+    return buf;
+  },
+  ftNumeric: (value) => {
+    var buf = Buffer.alloc(16);
+    let num = value.bigint;
+    buf.writeBigUInt64LE(num & nbits64, 0);
+    buf.writeBigInt64LE(num >> n64, 8);
     return buf;
   }
 
