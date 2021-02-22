@@ -51,7 +51,7 @@ describe('Boolean Table', function() {
     });
 
     step('Insert invalid Bool value', async function() {
-        const res = await runQueryPromise('insert into test values (40000)');
+        const res = await runQueryPromise("insert into test values ('foo')");
         should.exist(res.err);
     });
 
