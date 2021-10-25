@@ -9,6 +9,7 @@ export interface IConnectionConfig {
   is_ssl?: boolean;
   debug?: boolean;
   networkTimeout?: number;
+  connectionTimeout?: number;
 }
 
 export interface IConnectionReady {
@@ -131,6 +132,18 @@ export default class Connection implements IConnection {
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
   static extractStrings(string: string): IExtractedStrings;
   static SqNumeric: (new () => ISqNumeric) & {from(value: number|string|bigint|ISqNumeric, scale?: number): ISqNumeric;};
+  /**
+   * Compares verion strings.
+   * 
+   * @param v1 
+   * @param v2 
+   * 
+   * @returns
+   * - -1 = v1 < v2
+   * -  0 = v1 == v2
+   * -  1 = v1 > v2
+   * - undefined = invalid versions
+   */
   static versionCompare(v1: string|undefined, v2: string|undefined): -1|0|1|undefined;
 }
 
