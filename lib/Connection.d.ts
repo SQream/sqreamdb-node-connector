@@ -20,8 +20,10 @@ export interface IConnectionReady {
   disconnect(): Promise<void>;
   query<T>(sql: string, ...replacements: any[]): Promise<IQueryReady<T>>;
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
+  executeMany<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
   executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
+  executeMany<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   getServerProtocolVersion(): number;
   getClientProtocolVersion(): number;
   getSqreamVersion(): string|undefined;
@@ -127,6 +129,7 @@ export default class Connection implements IConnection {
   execute<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   executeCursor<T>(sql: string, ...replacements: any[]): Promise<IQueryFetch<T>>;
   executeInsert(sql: string, ...replacements: any[]): Promise<IQueryPut>;
+  executeMany<T>(sql: string, ...replacements: any[]): Promise<T[]>;
   constructor(config: IConnectionConfig);
   static sqConnect(host: string, port?: string, is_ssl?: boolean, debug?: boolean): Promise<ISqConnection>;
   static sqlSanitize(sql: string, replacements?: (string|number|null|boolean|undefined)[]): {words: (string[])[], statements: string[]};
