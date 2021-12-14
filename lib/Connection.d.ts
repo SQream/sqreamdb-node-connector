@@ -51,7 +51,7 @@ export interface IQueryPut {
 export interface IQueryFetch<T> {
   queryTypeNamed: IQueryTypeNamed[];
   close: () => Promise<void>
-  fetchIterator: (chunkSize?: number) => AsyncGenerator<T[]>
+  fetchIterator: (chunkSize?: number) => AsyncGenerator<T[], T[], T[]>
   fetchAll(rowLimit?: number): Promise<T[]>;
   put(): IQueryPut
 }
